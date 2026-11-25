@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout1">
+<body>
+<div layout:fragment="content">
+    <div class="p-3">
+        <div class="alert alert-danger">
+            <h3>Not Authorized</h3>
+            <p>Vous n'avez pas les droits nécessaires pour accéder à cette page.</p>
+            <a class="btn btn-outline-danger" th:href="@{/user/index}">Retour aux produits</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="layout1">
 <body>
 <div layout:fragment="content">
-    <div class="p-3">
-        <a class="btn btn-primary" th:href="@{/newProduct}">New Product</a>
+    <div class="p-3" sec:authorize="hasRole('ADMIN')">
+        <a class="btn btn-primary" th:href="@{/admin/newProduct}">New Product</a>
     </div>
     <div class="p-3">
         <table class="table">
             <thead>
-            <tr><th>ID</th><th>Name</th><th>Price</th><th>Quantity</th><th></th></tr>
+            <tr>
+                <th>ID</th><th>Name</th><th>Price</th><th>Quantity</th>
+                <th sec:authorize="hasRole('ADMIN')"></th>
+            </tr>
             </thead>
             <tbody>
             <tr th:each="p:${productList}">
@@ -18,9 +22,11 @@
                 <td th:text="${p.name}"></td>
                 <td th:text="${p.price}"></td>
                 <td th:text="${p.quantity}"></td>
-                <td>
-                    <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?')"
-                       class="btn btn-danger" th:href="@{/delete(id=${p.id})}">Delete</a>
+                <td sec:authorize="hasRole('ADMIN')">
+                    <form method="post" th:action="@{/admin/delete(id=${p.id})}">
+                        <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?')">Delete</button>
+                    </form>
                 </td>
             </tr>
             </tbody>
