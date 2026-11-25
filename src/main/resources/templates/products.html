@@ -9,10 +9,16 @@
         <a class="btn btn-primary" th:href="@{/admin/newProduct}">New Product</a>
     </div>
     <div class="p-3">
+        <form method="get" th:action="@{/user/index}" class="d-flex gap-2 mb-3">
+            <input type="text" name="keyword" class="form-control w-auto" placeholder="Rechercher par nom"
+                   th:value="${keyword}">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </form>
         <table class="table">
             <thead>
             <tr>
                 <th>ID</th><th>Name</th><th>Price</th><th>Quantity</th>
+                <th sec:authorize="hasRole('ADMIN')"></th>
                 <th sec:authorize="hasRole('ADMIN')"></th>
             </tr>
             </thead>
@@ -27,6 +33,9 @@
                         <button type="submit" class="btn btn-danger"
                                 onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?')">Delete</button>
                     </form>
+                </td>
+                <td sec:authorize="hasRole('ADMIN')">
+                    <a class="btn btn-success" th:href="@{/admin/editProduct(id=${p.id})}">Edit</a>
                 </td>
             </tr>
             </tbody>

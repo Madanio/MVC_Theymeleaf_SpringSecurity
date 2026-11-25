@@ -19,9 +19,11 @@ public class ProductController {
 
     @GetMapping("/user/index")
     @PreAuthorize("hasRole('USER')")
-    public String index(Model model){
-        List<Product> products = productRepository.findAll();
+    public String index(Model model,
+                        @RequestParam(name = "keyword", defaultValue = "") String keyword){
+        List<Product> products = productRepository.findByNameContains(keyword);
         model.addAttribute("productList", products);
+        model.addAttribute("keyword", keyword);
         return "products";
     }
 
@@ -48,8 +50,18 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     public String saveProduct(@Valid Product product, BindingResult bindingResult, Model model){
         if (bindingResult.hasErrors()) return "new-product";
-        productRepository.save(product);
-        return "redirect:/admin/newProduct";
+        boolean isUpdate = product.getId() != null;
+        productRepository.save(product); // avec un id existant, save() fait une mise à jour
+        return isUpdate ? "redirect:/user/index" : "redirect:/admin/newProduct";
+    }
+
+    @GetMapping("/admin/editProduct")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String editProduct(Model model, @RequestParam(name = "id") Long id){
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produit introuvable : " + id));
+        model.addAttribute("product", product);
+        return "new-product";
     }
 
     // RequestMapping (toutes méthodes) : un POST refusé est aussi redirigé ici
